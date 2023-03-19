@@ -8,7 +8,7 @@ NORMAL=$(tput sgr0)
 
 for dir in ${1%/}
 do
-    if test $(find "$dir" -maxdepth 1 -type f -name "*.MP4" | wc -c) -eq 0
+    if test $(find "$dir" -maxdepth 1 -type f -iname "*.MP4" | wc -c) -eq 0
     then        
         printf "\nNo media files found in directory '"${dir##*/}"'\n"
     else
@@ -16,7 +16,7 @@ do
     printf "\nFound media in directory '"${dir##*/}"'"
     
     # Get all media files with mp4 extension and sort them by date to a text file
-    find "$dir" -maxdepth 1 -name "*.MP4" -type f -execdir ls -1tr "{}" + >> "$dir"/concat_list.txt
+    find "$dir" -maxdepth 1 -iname "*.MP4" -type f -execdir ls -1tr "{}" + >> "$dir"/concat_list.txt
  
     # Remove path names from file path in text file so it is just the filename and extension
     sed -i 's/\(.*\)\/\(.*\)\.\(.*\)$/\2.\3/' "$dir"/concat_list.txt
@@ -34,20 +34,20 @@ do
         printf "'output' directory already exists\n"
     fi
 
-    printf "Concatenating listed media to output/"${dir##*/}".mp4'\n\n"
+    printf "Concatenating listed media to output/"${dir##*/}".MP4'\n\n"
 
     # Print found media sorted by date to console
     cat "$dir"/concat_list.txt ; echo
 
     # Start ffmpeg concatenation
-    ffmpeg -f concat -safe 0 -i "$dir"/concat_list.txt -c copy "$dir"/output/"${dir##*/}".mp4
+    ffmpeg -f concat -safe 0 -i "$dir"/concat_list.txt -c copy "$dir"/output/"${dir##*/}".MP4
 
-    printf "Removed 'concat_list.txt' from directory '"${dir##*/}"'\n"
-    rm "$dir"/concat_list.txt
+    #printf "Removed 'concat_list.txt' from directory '"${dir##*/}"'\n"
+    #rm "$dir"/concat_list.txt
 
     printf "\n${GREEN}${BRIGHT}Operation Completed Successfully\n${NORMAL}"  
 
-    printf "${LIME_YELLOW}*** Output file located in "$dir"/output/"${dir##*/}".mp4\n\n${NORMAL}"
+    printf "${LIME_YELLOW}*** Output file located in "$dir"/output/"${dir##*/}".MP4\n\n${NORMAL}"
     fi
 done
 
